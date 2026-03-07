@@ -26,22 +26,46 @@
 	<body>
 		
 			<!--npc-->
-			<div id="fullscreenBtn">
-					<button onclick="toanManHinh(event)">Bật toàn màn hình</button>
-			</div>
-			<script>
-				function toanManHinh(event){
-				
-					event.stopPropagation();
-					
-					let elem = document.documentElement;
-					
-					if (!document.fullscreenElement) {
-					elem.requestFullscreen().catch(err => console.log(err));
-					}
-				
-				}
-			</script>
+			<!-- đặt vào ngay vị trí bạn đang để nút fullscreen -->
+<div id="fullscreenBtn">
+  <button id="fsbtn">Bật toàn màn hình</button>
+</div>
+
+<script>
+/* global $ */   // nếu bạn dùng jQuery trên trang
+// biến thời gian khóa canvas tạm thời sau khi bấm nút
+let disableCanvasClickUntil = 0;
+
+// dùng pointerdown để bắt sự kiện trước click và trước khi event bubble xuống canvas
+document.getElementById('fsbtn').addEventListener('pointerdown', function(e){
+  // ngăn event tiếp tục truyền xuống canvas
+  e.stopPropagation();
+  e.preventDefault();
+
+  // khóa canvas trong 600 ms để ngăn click "rơi xuống"
+  disableCanvasClickUntil = Date.now() + 600;
+
+  // tắt pointer trên canvas tạm thời để an toàn (nếu dùng jQuery)
+  if (window.$ && $('#canvas').length) {
+    $('#canvas').css('pointer-events','none');
+    setTimeout(function(){
+      $('#canvas').css('pointer-events','auto');
+    }, 700);
+  }
+
+  // gọi fullscreen an toàn
+  let elem = document.documentElement;
+  if (!document.fullscreenElement) {
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen().catch(function(err){ console.log('FS error:', err); });
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen();
+    }
+  }
+});
+</script>
 			 
 			<audio id="bgMusic" autoplay="autoplay" >
     			<source src="music/nhac.mp3" type="audio/mp3" />
@@ -250,6 +274,7 @@
 
 </body>
 </html>
+
 
 
 
