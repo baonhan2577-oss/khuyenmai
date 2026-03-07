@@ -3,13 +3,7 @@ var $win = $(window);
 var clientWidth = $win.width();
 var clientHeight = $win.height();
 
-$(window).resize(function() {
-    var newWidth = $win.width();
-    var newHeight = $win.height();
-    if (newWidth != clientWidth && newHeight != clientHeight) {
-        location.replace(location);
-    }
-});
+
 
 (function($) {
 	$.fn.typewriter = function() {
@@ -54,4 +48,5 @@ function timeElapse(date){
 	var result = "<span class=\"digit\">" + days + "</span> ngày <span class=\"digit\">" + hours + "</span> giờ <span class=\"digit\">" + minutes + "</span> phút <span class=\"digit\">" + seconds + "</span> giây"; 
 	$("#clock").html(result);
 }
+
 
