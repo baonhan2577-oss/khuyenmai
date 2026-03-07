@@ -1,52 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="image/favicon.ico">
+<title>Quốc tế phụ nữ</title>
 
-var $win = $(window);
-var clientWidth = $win.width();
-var clientHeight = $win.height();
+<link rel="stylesheet" href="./renxi/default.css">
 
+<script src="./renxi/jquery.min.js"></script>
+<script src="./renxi/jscex.min.js"></script>
+<script src="./renxi/jscex-parser.js"></script>
+<script src="./renxi/jscex-jit.js"></script>
+<script src="./renxi/jscex-builderbase.min.js"></script>
+<script src="./renxi/jscex-async.min.js"></script>
+<script src="./renxi/jscex-async-powerpack.min.js"></script>
+<script src="./renxi/functions.js"></script>
+<script src="./renxi/love.js"></script>
 
+</head>
 
-(function($) {
-	$.fn.typewriter = function() {
-		this.each(function() {
-			var $ele = $(this), str = $ele.html(), progress = 0;
-			$ele.html('');
-			var timer = setInterval(function() {
-				var current = str.substr(progress, 1);
-				if (current == '<') {
-					progress = str.indexOf('>', progress) + 1;
-				} else {
-					progress++;
-				}
-				$ele.html(str.substring(0, progress) + (progress & 1 ? '_' : ''));
-				if (progress >= str.length) {
-					clearInterval(timer);
-				}
-			}, 75);
-		});
-		return this;
-	};
-})(jQuery);
+<body>
 
-function timeElapse(date){
-	var current = Date();
-	var seconds = (Date.parse(current) - Date.parse(date)) / 1000;
-	var days = Math.floor(seconds / (3600 * 24));
-	seconds = seconds % (3600 * 24);
-	var hours = Math.floor(seconds / 3600);
-	if (hours < 10) {
-		hours = "0" + hours;
-	}
-	seconds = seconds % 3600;
-	var minutes = Math.floor(seconds / 60);
-	if (minutes < 10) {
-		minutes = "0" + minutes;
-	}
-	seconds = seconds % 60;
-	if (seconds < 10) {
-		seconds = "0" + seconds;
-	}
-	var result = "<span class=\"digit\">" + days + "</span> ngày <span class=\"digit\">" + hours + "</span> giờ <span class=\"digit\">" + minutes + "</span> phút <span class=\"digit\">" + seconds + "</span> giây"; 
-	$("#clock").html(result);
+<audio id="bgMusic" loop>
+<source src="music/nhac.mp3" type="audio/mpeg">
+</audio>
+
+<div id="main">
+
+<div id="error">
+Trình duyệt của bạn không được hỗ trợ. Hãy dùng Chrome hoặc Firefox.
+</div>
+
+<div id="wrap">
+
+<div id="text">
+<div id="code">
+
+<font color="#0000FF">
+
+<span class="say">Chào ny của anh!</span><br>
+<span class="say"></span><br>
+
+<span class="say">Em chính là người mà anh yêu nhất!</span><br>
+<span class="say">Chúc em luôn duyên dáng và xinh đẹp.</span><br>
+<span class="say">Kính chúc "một nửa" của nhân loại vui vẻ, hạnh phúc bên người thân yêu!</span><br>
+
+<span class="say">
+<img src="image/tym.png">
+</span>
+
+<br>
+
+<span class="say">--Mãi yêu em--</span>
+
+</font>
+
+</div>
+</div>
+
+<div id="clock-box">
+<font color="#FF0000">Ngày đầu tiên ta yêu nhau đến nay đã....</font>
+<div id="clock"></div>
+</div>
+
+<canvas id="canvas" width="1100" height="680"></canvas>
+
+</div>
+</div>
+
+<script>
+
+(function(){
+
+var canvas = $('#canvas');
+
+if (!canvas[0].getContext){
+$("#error").show();
+return false;
 }
 
+/* sửa lỗi hitbox */
+var width = canvas[0].width;
+var height = canvas[0].height;
 
+var opts = {
+
+seed:{
+x: width/2,
+color:"rgb(190,26,37)",
+scale:2
+},
+
+branch:[
+[535,680,570,250,500,200,30,100,[
+[540,500,455,417,340,400,13,100,[
+[450,435,434,430,394,395,2,40]
+]],
+[550,445,600,356,680,345,12,100,[
+[578,400,648,409,661,426,3,80]
+]],
+[539,281,537,248,534,217,3,40],
+[546,397,413,247,328,244,9,80,[
+[427,286,383,253,371,205,2,40],
+[498,345,435,315,395,330,4,60]
+]],
+[546,357,608,252,678,221,6,100,[
+[590,293,646,277,648,271,2,80]
+]]
+]]
+],
+
+bloom:{
+num:700,
+width:1080,
+height:650
+},
+
+footer:{
+width:1200,
+height:5,
+speed:10
+}
+
+};
+
+var tree = new Tree(canvas[0],width,height,opts);
+var seed = tree.seed;
+var foot = tree.footer;
+var hold = 1;
+
+canvas.click(function(e){
+
+var offset = canvas.offset(), x, y;
+
+x = e.pageX - offset.left;
+y = e.pageY - offset.top;
+
+if(seed.hover(x,y)){
+
+hold = 0;
+
+canvas.unbind("click");
+canvas.unbind("mousemove");
+canvas.removeClass('hand');
+
+/* phát nhạc khi click */
+var music = document.getElementById("bgMusic");
+
+if(music){
+music.play().catch(function(error){
+console.log(error);
+});
+}
+
+}
+
+})
+
+.mousemove(function(e){
+
+var offset = canvas.offset(), x, y;
+
+x = e.pageX - offset.left;
+y = e.pageY - offset.top;
+
+canvas.toggleClass('hand', seed.hover(x,y));
+
+});
+
+
+var seedAnimate = eval(Jscex.compile("async", function () {
+
+seed.draw();
+
+while (hold){
+$await(Jscex.Async.sleep(10));
+}
+
+while(seed.canScale()){
+seed.scale(0.95);
+$await(Jscex.Async.sleep(10));
+}
+
+while(seed.canMove()){
+seed.move(0,2);
+foot.draw();
+$await(Jscex.Async.sleep(10));
+}
+
+}));
+
+
+var growAnimate = eval(Jscex.compile("async", function () {
+
+do{
+tree.grow();
+$await(Jscex.Async.sleep(10));
+}
+while(tree.canGrow());
+
+}));
+
+
+var flowAnimate = eval(Jscex.compile("async", function () {
+
+do{
+tree.flower(2);
+$await(Jscex.Async.sleep(10));
+}
+while(tree.canFlower());
+
+}));
+
+
+var moveAnimate = eval(Jscex.compile("async", function () {
+
+tree.snapshot("p1",240,0,610,680);
+
+while(tree.move("p1",500,0)){
+foot.draw();
+$await(Jscex.Async.sleep(10));
+}
+
+foot.draw();
+tree.snapshot("p2",500,0,610,680);
+
+canvas.parent().css("background","url("+tree.toDataURL('image/png')+")");
+
+canvas.css("background","#ffe");
+
+$await(Jscex.Async.sleep(300));
+
+canvas.css("background","none");
+
+}));
+
+
+var jumpAnimate = eval(Jscex.compile("async", function () {
+
+while(true){
+
+tree.ctx.clearRect(0,0,width,height);
+
+tree.jump();
+foot.draw();
+
+$await(Jscex.Async.sleep(25));
+
+}
+
+}));
+
+
+var textAnimate = eval(Jscex.compile("async", function () {
+
+var together = new Date();
+
+together.setFullYear(2025,9,7);
+together.setHours(19);
+together.setMinutes(45);
+together.setSeconds(0);
+together.setMilliseconds(0);
+
+$("#code").show().typewriter();
+$("#clock-box").fadeIn(500);
+
+while(true){
+timeElapse(together);
+$await(Jscex.Async.sleep(1000));
+}
+
+}));
+
+
+var runAsync = eval(Jscex.compile("async", function () {
+
+$await(seedAnimate());
+$await(growAnimate());
+$await(flowAnimate());
+$await(moveAnimate());
+
+textAnimate().start();
+
+$await(jumpAnimate());
+
+}));
+
+runAsync().start();
+
+})();
+
+</script>
+
+</body>
+</html>
