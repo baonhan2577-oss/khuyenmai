@@ -26,44 +26,47 @@
 	<body>
 		
 			<!--npc-->
-			<!-- đặt vào ngay vị trí bạn đang để nút fullscreen -->
-<div id="fullscreenBtn">
+			<div id="fullscreenBtn">
   <button id="fsbtn">Bật toàn màn hình</button>
 </div>
 
 <script>
-/* global $ */   // nếu bạn dùng jQuery trên trang
-// biến thời gian khóa canvas tạm thời sau khi bấm nút
-let disableCanvasClickUntil = 0;
+/* Patch: ngăn click rơi xuống canvas */
+var disableCanvasClickUntil = 0;
 
-// dùng pointerdown để bắt sự kiện trước click và trước khi event bubble xuống canvas
 document.getElementById('fsbtn').addEventListener('pointerdown', function(e){
-  // ngăn event tiếp tục truyền xuống canvas
+  // chặn event truyền tiếp xuống canvas
   e.stopPropagation();
   e.preventDefault();
 
-  // khóa canvas trong 600 ms để ngăn click "rơi xuống"
-  disableCanvasClickUntil = Date.now() + 600;
+  // khóa canvas trong 700 ms để đảm bảo click không rơi xuống
+  disableCanvasClickUntil = Date.now() + 700;
 
-  // tắt pointer trên canvas tạm thời để an toàn (nếu dùng jQuery)
-  if (window.$ && $('#canvas').length) {
-    $('#canvas').css('pointer-events','none');
-    setTimeout(function(){
-      $('#canvas').css('pointer-events','auto');
-    }, 700);
-  }
-
-  // gọi fullscreen an toàn
-  let elem = document.documentElement;
-  if (!document.fullscreenElement) {
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen().catch(function(err){ console.log('FS error:', err); });
-    } else if (elem.webkitRequestFullscreen) {
-      elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) {
-      elem.msRequestFullscreen();
+  // tắt pointer trên canvas tạm thời (phòng thủ thứ hai)
+  try {
+    if (window.$ && $('#canvas').length) {
+      $('#canvas').css('pointer-events','none');
+      setTimeout(function(){ $('#canvas').css('pointer-events','auto'); }, 800);
     }
+  } catch(err){
+    console.log('Patch: không thể thay pointer-events:', err);
   }
+
+  // gọi fullscreen với delay nhỏ để tránh xung đột với animation đang chạy
+  setTimeout(function(){
+    var elem = document.documentElement;
+    if (!document.fullscreenElement) {
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(function(err){ console.log('requestFullscreen error:', err); });
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+      }
+    }
+  }, 180);
+
+  console.log('fsbtn pointerdown', Date.now());
 });
 </script>
 			 
@@ -274,6 +277,7 @@ document.getElementById('fsbtn').addEventListener('pointerdown', function(e){
 
 </body>
 </html>
+
 
 
 
