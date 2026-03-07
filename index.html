@@ -14,9 +14,7 @@
         <script type="text/javascript" src="./renxi/love.js" charset="utf-8"></script>
 				
 		<style>
-			.npc {
-				z-index:9999;
-			}
+			
 			button{
 			    margin:0;
 			    height:10vh;
@@ -42,20 +40,20 @@
           
 
         <div id="main">
-			<div class="npd">
+			<div style="position:fixed; top:20px; right:20px; z-index:9999;">
 				<button onclick="toanManHinh()">Bật toàn màn hình</button>
 				<script>
-				function toanManHinh() {
-				    let elem = document.documentElement;
-				
-				    if (elem.requestFullscreen) {
-				        elem.requestFullscreen();
-				    } else if (elem.webkitRequestFullscreen) { 
-				        elem.webkitRequestFullscreen();
-				    } else if (elem.msRequestFullscreen) { 
-				        elem.msRequestFullscreen();
-				    }
-				}
+					function toanManHinh() {
+					    let elem = document.documentElement;
+					
+					    if (elem.requestFullscreen) {
+					        elem.requestFullscreen();
+					    } else if (elem.webkitRequestFullscreen) { 
+					        elem.webkitRequestFullscreen();
+					    } else if (elem.msRequestFullscreen) { 
+					        elem.msRequestFullscreen();
+					    }
+					}
 				</script>
 			</div>
 			
@@ -246,6 +244,7 @@
 
 </body>
 </html>
+
 
 
 
