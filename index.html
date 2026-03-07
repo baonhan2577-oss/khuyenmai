@@ -36,31 +36,29 @@
 			<audio autoplay="autoplay" >
 					<source src="music/nhac.mp3" type="audio/mp3" />
             </audio> 
-
-          
-
+		<script>
+					function toanManHinh(){
+					let elem = document.documentElement;
+					
+					if (elem.requestFullscreen) {
+					elem.requestFullscreen();
+					}
+					else if (elem.webkitRequestFullscreen) {
+					elem.webkitRequestFullscreen();
+					}
+					else if (elem.msRequestFullscreen) {
+					elem.msRequestFullscreen();
+					}
+					}
+				</script>
+			
         <div id="main">
 							
 				<div style="position:fixed;top:20px;right:20px;z-index:9999;">
 				<button onclick="toanManHinh()">Bật toàn màn hình</button>
 				</div>
 				
-				<script>
-				function toanManHinh(){
-				let elem = document.documentElement;
 				
-				if (elem.requestFullscreen) {
-				elem.requestFullscreen();
-				}
-				else if (elem.webkitRequestFullscreen) {
-				elem.webkitRequestFullscreen();
-				}
-				else if (elem.msRequestFullscreen) {
-				elem.msRequestFullscreen();
-				}
-				}
-				</script>
-			
             <div id="error">Trình duyệt của bạn không được hỗ trợ. Để được hỗ trợ liên hệ daikupj@gmail.com. Hoặc sử dụng (<a href="http://www.google.cn/chrome">Chrome</a>) và (<a href="http://firefox.com/download/">Firefox</a>)</div>
              <div id="wrap">
                 <div id="text" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif ;">
@@ -248,6 +246,7 @@
 
 </body>
 </html>
+
 
 
 
