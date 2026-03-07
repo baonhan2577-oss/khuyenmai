@@ -1,308 +1,327 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<link rel="icon" type="image/png" href="image/favicon.ico">
-		<title>Quốc tế phụ nữ</title>    
-        <link type="text/css" rel="stylesheet" href="./renxi/default.css">
-		<script type="text/javascript" src="./renxi/jquery.min.js"></script>
-		<script type="text/javascript" src="./renxi/jscex.min.js"></script>
-		<script type="text/javascript" src="./renxi/jscex-parser.js"></script>
-		<script type="text/javascript" src="./renxi/jscex-jit.js"></script>
-		<script type="text/javascript" src="./renxi/jscex-builderbase.min.js"></script>
-		<script type="text/javascript" src="./renxi/jscex-async.min.js"></script>
-		<script type="text/javascript" src="./renxi/jscex-async-powerpack.min.js"></script>
-		<script type="text/javascript" src="./renxi/functions.js" charset="utf-8"></script>
-        <script type="text/javascript" src="./renxi/love.js" charset="utf-8"></script>
-		<!--npc-->
-		<style>
-			#canvas{
-				position:fixed;
-				top:0;
-				left:0;
-				width:100vw;
-				height:100vh;
-				}
-			button {
-			position:fixed;
-			top:20px;
-			right:20px;
-			z-index:999999;
-			}
-		</style>
-</head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="icon" type="image/png" href="image/favicon.ico">
+<title>Quốc tế phụ nữ</title>
 
-	<body>
-		
-			<!--npc-->
-			<div id="fullscreenBtn">
-  <button id="fsbtn">Bật toàn màn hình</button>
-</div>
+<link type="text/css" rel="stylesheet" href="./renxi/default.css">
+<script type="text/javascript" src="./renxi/jquery.min.js"></script>
+<script type="text/javascript" src="./renxi/jscex.min.js"></script>
+<script type="text/javascript" src="./renxi/jscex-parser.js"></script>
+<script type="text/javascript" src="./renxi/jscex-jit.js"></script>
+<script type="text/javascript" src="./renxi/jscex-builderbase.min.js"></script>
+<script type="text/javascript" src="./renxi/jscex-async.min.js"></script>
+<script type="text/javascript" src="./renxi/jscex-async-powerpack.min.js"></script>
+<script type="text/javascript" src="./renxi/functions.js" charset="utf-8"></script>
+<script type="text/javascript" src="./renxi/love.js" charset="utf-8"></script>
 
-<script>
-/* Patch: ngăn click rơi xuống canvas */
-var disableCanvasClickUntil = 0;
-
-document.getElementById('fsbtn').addEventListener('pointerdown', function(e){
-  // chặn event truyền tiếp xuống canvas
-  e.stopPropagation();
-  e.preventDefault();
-
-  // khóa canvas trong 700 ms để đảm bảo click không rơi xuống
-  disableCanvasClickUntil = Date.now() + 700;
-
-  // tắt pointer trên canvas tạm thời (phòng thủ thứ hai)
-  try {
-    if (window.$ && $('#canvas').length) {
-      $('#canvas').css('pointer-events','none');
-      setTimeout(function(){ $('#canvas').css('pointer-events','auto'); }, 800);
-    }
-  } catch(err){
-    console.log('Patch: không thể thay pointer-events:', err);
+<style>
+  /* Nút full-screen: góc trái, z-index cao, kiểu đơn giản */
+  #fullBtn {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 999999;
+    padding: 8px 10px;
+    font-size: 14px;
+    background: rgba(255,255,255,0.95);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  #fullBtn:active { transform: translateY(1px); }
+  /* Khi ở full-screen, vẫn hiển thị nút */
+  :fullscreen #fullBtn,
+  :-webkit-full-screen #fullBtn,
+  :-ms-fullscreen #fullBtn {
+    /* nếu muốn thay đổi style khi full, chỉnh ở đây */
   }
 
-  // gọi fullscreen với delay nhỏ để tránh xung đột với animation đang chạy
-  setTimeout(function(){
-    var elem = document.documentElement;
-    if (!document.fullscreenElement) {
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen().catch(function(err){ console.log('requestFullscreen error:', err); });
-      } else if (elem.webkitRequestFullscreen) {
-        elem.webkitRequestFullscreen();
-      } else if (elem.msRequestFullscreen) {
-        elem.msRequestFullscreen();
-      }
-    }
-  }, 180);
+  /* Giữ con trỏ tay cho canvas khi hover hạt mầm (giữ nguyên logic cũ) */
+  canvas.hand { cursor: pointer; }
+</style>
 
-  console.log('fsbtn pointerdown', Date.now());
-});
-</script>
-			 
-			<audio id="bgMusic" autoplay="autoplay" >
-    			<source src="music/nhac.mp3" type="audio/mp3" />
-			</audio>
-          
+</head>
+<body>
 
-        <div id="main">
-            <div id="error">Trình duyệt của bạn không được hỗ trợ. Để được hỗ trợ liên hệ daikupj@gmail.com. Hoặc sử dụng (<a href="http://www.google.cn/chrome">Chrome</a>) và (<a href="http://firefox.com/download/">Firefox</a>)</div>
-             <div id="wrap">
-                <div id="text" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif ;">
-			        <div id="code">
-			      <font color="#0000FF" ><span class="say">Chào ny của anh!</span><br>
-						<span class="say"> </span><br>
-						<span class="say"></span>Em chính là người mà anh yêu nhất!<br>
-						<span class="say">Chúc em luôn duyên dáng và xinh đẹp .</span><br>
-						<span class="say">Kính chúc "một nửa" của nhân loại vui vẻ, hạnh phúc bên người thân yêu!</span><br>
-                        <span class="say"><span class="space"><img src="image/tym.png" alt=""><br>
-                        <span class="say"><span class="space"></span> --Mãi yêu em--</span>
-			  </font></p>
-      </div>
-                </div>
-                <div id="clock-box">
-                    <span class="STYLE1"></span><font color="#FF0000">Ngày đầu tiên ta yêu nhau đến nay đã....</font>
-<!-- <span class="STYLE1"> Time of love...</span> -->
-                  <div id="clock"></div>
-              </div>
-                <canvas id="canvas" width="1100" height="680"></canvas>
-            </div>
-            
+  <!-- Nút Fullscreen (góc trái, z-index cao) -->
+  <button id="fullBtn" title="Toàn màn hình (F11)">Toàn màn hình</button>
+
+  <audio id="bgMusic" autoplay="autoplay" >
+    <source src="music/nhac.mp3" type="audio/mp3" />
+  </audio>
+
+  <div id="main">
+    <div id="error">Trình duyệt của bạn không được hỗ trợ. Để được hỗ trợ liên hệ daikupj@gmail.com. Hoặc sử dụng (<a href="http://www.google.cn/chrome">Chrome</a>) và (<a href="http://firefox.com/download/">Firefox</a>)</div>
+    <div id="wrap">
+      <div id="text" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif ;">
+        <div id="code">
+          <font color="#0000FF" >
+            <span class="say">Chào ny của anh!</span><br>
+            <span class="say"> </span><br>
+            <span class="say"></span>Em chính là người mà anh yêu nhất!<br>
+            <span class="say">Chúc em luôn duyên dáng và xinh đẹp .</span><br>
+            <span class="say">Kính chúc "một nửa" của nhân loại vui vẻ, hạnh phúc bên người thân yêu!</span><br>
+            <span class="say"><span class="space"><img src="image/tym.png" alt=""><br>
+            <span class="say"><span class="space"></span> --Mãi yêu em--</span>
+          </font>
         </div>
-    
-    <script>
-    </script>
+      </div>
+      <div id="clock-box">
+        <span class="STYLE1"></span><font color="#FF0000">Ngày đầu tiên ta yêu nhau đến nay đã....</font>
+        <div id="clock"></div>
+      </div>
+      <canvas id="canvas" width="1100" height="680"></canvas>
+    </div>
+  </div>
 
-    <script>
-    (function(){
-        var canvas = $('#canvas');
-		
-        if (!canvas[0].getContext) {
-            $("#error").show();
-            return false;        }
-		var width = window.innerWidth;
-		var height = window.innerHeight;      
-        canvas.attr("width", width);
-        canvas.attr("height", height);
-        var opts = {
-            seed: {
-                x: width / 2 - 20,
-                color: "rgb(190, 26, 37)",
-                scale: 2
-            },
-            branch: [
-                [535, 680, 570, 250, 500, 200, 30, 100, [
-                    [540, 500, 455, 417, 340, 400, 13, 100, [
-                        [450, 435, 434, 430, 394, 395, 2, 40]
-                    ]],
-                    [550, 445, 600, 356, 680, 345, 12, 100, [
-                        [578, 400, 648, 409, 661, 426, 3, 80]
-                    ]],
-                    [539, 281, 537, 248, 534, 217, 3, 40],
-                    [546, 397, 413, 247, 328, 244, 9, 80, [
-                        [427, 286, 383, 253, 371, 205, 2, 40],
-                        [498, 345, 435, 315, 395, 330, 4, 60]
-                    ]],
-                    [546, 357, 608, 252, 678, 221, 6, 100, [
-                        [590, 293, 646, 277, 648, 271, 2, 80]
-                    ]]
-                ]] 
-            ],
-            bloom: {
-                num: 700,
-                width: 1080,
-                height: 650,
-            },
-            footer: {
-                width: 1200,
-                height: 5,
-                speed: 10,
-            }
+<script>
+(function(){
+    // === CHỖ SỬA: tránh reload khi chuyển full-screen ===
+    var $win = $(window);
+    var clientWidth = $win.width();
+    var clientHeight = $win.height();
+
+    // Hàm kiểm tra đang ở full-screen (các tiền tố trình duyệt)
+    function isFullscreen() {
+      return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+    }
+
+    // Chỉ reload khi thay đổi kích thước do người dùng (không phải do full-screen)
+    $win.on('resize', function() {
+        var newWidth = $win.width();
+        var newHeight = $win.height();
+
+        // Nếu đang trong quá trình full-screen / thoát full-screen thì bỏ qua reload
+        if (isFullscreen()) {
+            // Cập nhật giá trị baseline để lần resize sau không nghĩ là "thay đổi lớn"
+            clientWidth = newWidth;
+            clientHeight = newHeight;
+            return;
         }
 
-        var tree = new Tree(canvas[0], width, height, opts);
-        var seed = tree.seed;
-        var foot = tree.footer;
-        var hold = 1;
-		
-		canvas.click(function(e) {
-			if (document.fullscreenElement) return;
-            var offset = canvas.offset(), x, y;
-            x = e.pageX - offset.left;
-            y = e.pageY - offset.top;
-            
-            // Khi người dùng bấm đúng vào vị trí (nút play / hạt mầm)
-            if (seed.hover(x, y)) {
-				//npc
-				document.documentElement.requestFullscreen();
-				
-                hold = 0; 
-                canvas.unbind("click");
-                canvas.unbind("mousemove");
-                canvas.removeClass('hand');
-                
-                // THÊM LỆNH BẬT NHẠC Ở ĐÂY:
-                var music = document.getElementById("bgMusic");
-                if (music) {
-                    music.play().catch(function(error) {
-                        console.log("Không thể phát nhạc:", error);
-                    });
-                }
-            }
-        }).mousemove(function(e){
-            var offset = canvas.offset(), x, y;
-            x = e.pageX - offset.left;
-            y = e.pageY - offset.top;
-            canvas.toggleClass('hand', seed.hover(x, y));
+        // Nếu trước đó đang full-screen mà vừa thoát, cập nhật baseline
+        // (tránh reload không mong muốn)
+        // Giữ lại logic reload cũ nhưng an toàn hơn: reload chỉ khi kích thước khác
+        if (newWidth !== clientWidth || newHeight !== clientHeight) {
+            // Nếu bạn vẫn muốn reload trong trường hợp thay đổi kích thước thực sự,
+            // bỏ comment dòng dưới đây. Hiện tại để tránh reset, ta KHÔNG reload.
+            // location.replace(location);
+            clientWidth = newWidth;
+            clientHeight = newHeight;
+        }
+    });
+
+    // Cập nhật baseline khi thay đổi chế độ full-screen (vào/ra)
+    function onFullScreenChange() {
+      // Sau khi vào/thoát full-screen, cập nhật clientWidth/clientHeight
+      clientWidth = $win.width();
+      clientHeight = $win.height();
+    }
+    document.addEventListener('fullscreenchange', onFullScreenChange);
+    document.addEventListener('webkitfullscreenchange', onFullScreenChange);
+    document.addEventListener('mozfullscreenchange', onFullScreenChange);
+    document.addEventListener('MSFullscreenChange', onFullScreenChange);
+
+    // === NÚT TOÀN MÀN HÌNH ===
+    var fullBtn = document.getElementById('fullBtn');
+    function requestFullScreenOnDocument() {
+      var el = document.documentElement;
+      if (el.requestFullscreen) return el.requestFullscreen();
+      if (el.webkitRequestFullscreen) return el.webkitRequestFullscreen();
+      if (el.mozRequestFullScreen) return el.mozRequestFullScreen();
+      if (el.msRequestFullscreen) return el.msRequestFullscreen();
+      return Promise.reject(new Error('Không hỗ trợ Fullscreen API'));
+    }
+    function exitFullScreen() {
+      if (document.exitFullscreen) return document.exitFullscreen();
+      if (document.webkitExitFullscreen) return document.webkitExitFullscreen();
+      if (document.mozCancelFullScreen) return document.mozCancelFullScreen();
+      if (document.msExitFullscreen) return document.msExitFullscreen();
+      return Promise.reject(new Error('Không hỗ trợ Exit fullscreen'));
+    }
+
+    fullBtn.addEventListener('click', function(e){
+      // Phải gọi requestFullscreen trong handler do quy định trình duyệt
+      if (!isFullscreen()) {
+        requestFullScreenOnDocument().catch(function(err){
+          console.warn('Yêu cầu full-screen bị chặn:', err);
         });
+      } else {
+        exitFullScreen().catch(function(err){
+          console.warn('Thoát full-screen lỗi:', err);
+        });
+      }
+      // Không ngăn chặn sự kiện mặc định khác; chỉ đảm bảo hành động gọi API
+    });
 
-        var seedAnimate = eval(Jscex.compile("async", function () {
-            seed.draw();
-            while (hold) {
-                $await(Jscex.Async.sleep(10));
-            }
-            while (seed.canScale()) {
-                seed.scale(0.95);
-                $await(Jscex.Async.sleep(10));
-            }
-            while (seed.canMove()) {
-                seed.move(0, 2);
-                foot.draw();
-                $await(Jscex.Async.sleep(10));
-            }
-        }));
+    // === PHẦN CÒN LẠI: giữ nguyên logic animation + canvas của bạn ===
+    var canvas = $('#canvas');
 
-        var growAnimate = eval(Jscex.compile("async", function () {
-            do {
-    	        tree.grow();
-                $await(Jscex.Async.sleep(10));
-            } while (tree.canGrow());
-        }));
+    if (!canvas[0].getContext) {
+        $("#error").show();
+        return false;
+    }
 
-        var flowAnimate = eval(Jscex.compile("async", function () {
-            do {
-    	        tree.flower(2);
-                $await(Jscex.Async.sleep(10));
-            } while (tree.canFlower());
-        }));
+    var width = canvas.width();
+    var height = canvas.height();
+    canvas.attr("width", width);
+    canvas.attr("height", height);
+    var opts = {
+        seed: {
+            x: width / 2 - 20,
+            color: "rgb(190, 26, 37)",
+            scale: 2
+        },
+        branch: [
+            [535, 680, 570, 250, 500, 200, 30, 100, [
+                [540, 500, 455, 417, 340, 400, 13, 100, [
+                    [450, 435, 434, 430, 394, 395, 2, 40]
+                ]],
+                [550, 445, 600, 356, 680, 345, 12, 100, [
+                    [578, 400, 648, 409, 661, 426, 3, 80]
+                ]],
+                [539, 281, 537, 248, 534, 217, 3, 40],
+                [546, 397, 413, 247, 328, 244, 9, 80, [
+                    [427, 286, 383, 253, 371, 205, 2, 40],
+                    [498, 345, 435, 315, 395, 330, 4, 60]
+                ]],
+                [546, 357, 608, 252, 678, 221, 6, 100, [
+                    [590, 293, 646, 277, 648, 271, 2, 80]
+                ]]
+            ]]
+        ],
+        bloom: {
+            num: 700,
+            width: 1080,
+            height: 650,
+        },
+        footer: {
+            width: 1200,
+            height: 5,
+            speed: 10,
+        }
+    }
 
-        var moveAnimate = eval(Jscex.compile("async", function () {
-            tree.snapshot("p1", 240, 0, 610, 680);
-            while (tree.move("p1", 500, 0)) {
-                foot.draw();
-                $await(Jscex.Async.sleep(10));
+    var tree = new Tree(canvas[0], width, height, opts);
+    var seed = tree.seed;
+    var foot = tree.footer;
+    var hold = 1;
+
+    canvas.click(function(e) {
+        var offset = canvas.offset(), x, y;
+        x = e.pageX - offset.left;
+        y = e.pageY - offset.top;
+
+        if (seed.hover(x, y)) {
+            hold = 0;
+            canvas.unbind("click");
+            canvas.unbind("mousemove");
+            canvas.removeClass('hand');
+
+            var music = document.getElementById("bgMusic");
+            if (music) {
+                music.play().catch(function(error) {
+                    console.log("Không thể phát nhạc:", error);
+                });
             }
+        }
+    }).mousemove(function(e){
+        var offset = canvas.offset(), x, y;
+        x = e.pageX - offset.left;
+        y = e.pageY - offset.top;
+        canvas.toggleClass('hand', seed.hover(x, y));
+    });
+
+    var seedAnimate = eval(Jscex.compile("async", function () {
+        seed.draw();
+        while (hold) {
+            $await(Jscex.Async.sleep(10));
+        }
+        while (seed.canScale()) {
+            seed.scale(0.95);
+            $await(Jscex.Async.sleep(10));
+        }
+        while (seed.canMove()) {
+            seed.move(0, 2);
             foot.draw();
-            tree.snapshot("p2", 500, 0, 610, 680);
+            $await(Jscex.Async.sleep(10));
+        }
+    }));
 
-            canvas.parent().css("background", "url(" + tree.toDataURL('image/png') + ")");
-            canvas.css("background", "#ffe");
-            $await(Jscex.Async.sleep(300));
-            canvas.css("background", "none");
-        }));
+    var growAnimate = eval(Jscex.compile("async", function () {
+        do {
+            tree.grow();
+            $await(Jscex.Async.sleep(10));
+        } while (tree.canGrow());
+    }));
 
-        var jumpAnimate = eval(Jscex.compile("async", function () {
-            var ctx = tree.ctx;
-            while (true) {
-                tree.ctx.clearRect(0, 0, width, height);
-                tree.jump();
-                foot.draw();
-                $await(Jscex.Async.sleep(25));
-            }
-        }));
+    var flowAnimate = eval(Jscex.compile("async", function () {
+        do {
+            tree.flower(2);
+            $await(Jscex.Async.sleep(10));
+        } while (tree.canFlower());
+    }));
 
-        var textAnimate = eval(Jscex.compile("async", function () {
-		    var together = new Date();
-		    together.setFullYear(2025 , 10 , 7); 			
-		    together.setHours(19);							
-		    together.setMinutes(45);				
-		    together.setSeconds(0);					
-            together.setMilliseconds(0);
-            
-           
+    var moveAnimate = eval(Jscex.compile("async", function () {
+        tree.snapshot("p1", 240, 0, 610, 680);
+        while (tree.move("p1", 500, 0)) {
+            foot.draw();
+            $await(Jscex.Async.sleep(10));
+        }
+        foot.draw();
+        tree.snapshot("p2", 500, 0, 610, 680);
 
-		    $("#code").show().typewriter();
-            $("#clock-box").fadeIn(500);
-            while (true) {
-                timeElapse(together);
-                $await(Jscex.Async.sleep(1000));
-            }
-        }));
+        canvas.parent().css("background", "url(" + tree.toDataURL('image/png') + ")");
+        canvas.css("background", "#ffe");
+        $await(Jscex.Async.sleep(300));
+        canvas.css("background", "none");
+    }));
 
-        var runAsync = eval(Jscex.compile("async", function () {
-            $await(seedAnimate());
-            $await(growAnimate());
-            $await(flowAnimate());
-            $await(moveAnimate());
+    var jumpAnimate = eval(Jscex.compile("async", function () {
+        var ctx = tree.ctx;
+        while (true) {
+            tree.ctx.clearRect(0, 0, width, height);
+            tree.jump();
+            foot.draw();
+            $await(Jscex.Async.sleep(25));
+        }
+    }));
 
-            textAnimate().start();
+    var textAnimate = eval(Jscex.compile("async", function () {
+        var together = new Date();
+        together.setFullYear(2025 , 10 , 7);
+        together.setHours(19);
+        together.setMinutes(45);
+        together.setSeconds(0);
+        together.setMilliseconds(0);
 
-            $await(jumpAnimate());
-        }));
+        $("#code").show().typewriter();
+        $("#clock-box").fadeIn(500);
+        while (true) {
+            timeElapse(together);
+            $await(Jscex.Async.sleep(1000));
+        }
+    }));
 
-        runAsync().start();
-    })();
-    </script>
+    var runAsync = eval(Jscex.compile("async", function () {
+        $await(seedAnimate());
+        $await(growAnimate());
+        $await(flowAnimate());
+        $await(moveAnimate());
+
+        textAnimate().start();
+
+        $await(jumpAnimate());
+    }));
+
+    runAsync().start();
+
+    // === KẾT THÚC IIFE ===
+})();
+</script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
