@@ -14,6 +14,13 @@
         <script type="text/javascript" src="./renxi/love.js" charset="utf-8"></script>
 		<!--npc-->
 		<style>
+			#canvas{
+				position:fixed;
+				top:0;
+				left:0;
+				width:100vw;
+				height:100vh;
+				}
 			button {
 			position:fixed;
 			top:20px;
@@ -110,7 +117,8 @@ document.getElementById('fsbtn').addEventListener('pointerdown', function(e){
         if (!canvas[0].getContext) {
             $("#error").show();
             return false;        }
-
+		var width = window.innerWidth;
+		var height = window.innerHeight;
         var width = canvas.width();
         var height = canvas.height();        
         canvas.attr("width", width);
@@ -277,6 +285,7 @@ document.getElementById('fsbtn').addEventListener('pointerdown', function(e){
 
 </body>
 </html>
+
 
 
 
