@@ -12,6 +12,7 @@
 		<script type="text/javascript" src="./renxi/jscex-async-powerpack.min.js"></script>
 		<script type="text/javascript" src="./renxi/functions.js" charset="utf-8"></script>
         <script type="text/javascript" src="./renxi/love.js" charset="utf-8"></script>
+		<!--npc-->
 		<style>
 			button {
 			position:fixed;
@@ -24,25 +25,21 @@
 
 	<body>
 		
-			
+			<!--npc-->
 			<div id="fullscreenBtn">
 					<button onclick="toanManHinh()">Bật toàn màn hình</button>
 			</div>
-			
 			<script>
-					function toanManHinh(){
-					let elem = document.documentElement;
-					
-					if (elem.requestFullscreen) {
-					elem.requestFullscreen();
-					}
-					else if (elem.webkitRequestFullscreen) {
-					elem.webkitRequestFullscreen();
-					}
-					else if (elem.msRequestFullscreen) {
-					elem.msRequestFullscreen();
-					}
-					}
+				function toanManHinh(){
+				let elem = document.documentElement;
+				if (!document.fullscreenElement) {
+					elem.requestFullscreen().catch(function(err){
+						console.log(err);
+					});
+					} else {		
+						document.exitFullscreen();
+					}	
+				}
 			</script>
 			 
 			<audio id="bgMusic" autoplay="autoplay" >
@@ -138,6 +135,9 @@
             
             // Khi người dùng bấm đúng vào vị trí (nút play / hạt mầm)
             if (seed.hover(x, y)) {
+				//npc
+				document.documentElement.requestFullscreen();
+				
                 hold = 0; 
                 canvas.unbind("click");
                 canvas.unbind("mousemove");
@@ -248,6 +248,7 @@
 
 </body>
 </html>
+
 
 
 
