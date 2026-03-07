@@ -12,20 +12,29 @@
 		<script type="text/javascript" src="./renxi/jscex-async-powerpack.min.js"></script>
 		<script type="text/javascript" src="./renxi/functions.js" charset="utf-8"></script>
         <script type="text/javascript" src="./renxi/love.js" charset="utf-8"></script>
-
+		<style>
+			#fullscreenBtn{
+			position:fixed;
+			top:20px;
+			right:20px;
+			z-index:999999;
+			}
+		</style>
 </head>
-			function toanManHinh(){
 
+	<body>
+		<div id="fullscreenBtn">
+		<button onclick="toanManHinh()">Bật toàn màn hình</button>
+		</div>
+		<script>
+			document.getElementById("fs").addEventListener("click", function(){
 			let elem = document.documentElement;
-			
-			if (elem.requestFullscreen) {
-			elem.requestFullscreen().catch(err => console.log(err));
+			if (!document.fullscreenElement) {
+			elem.requestFullscreen();
 			}
-			else if (elem.webkitRequestFullscreen) {
-			elem.webkitRequestFullscreen();
-			}
-			}
- 
+			});	
+		</script>
+			 
 			<audio id="bgMusic" autoplay="autoplay" >
     			<source src="music/nhac.mp3" type="audio/mp3" />
 			</audio>
