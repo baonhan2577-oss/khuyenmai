@@ -23,17 +23,21 @@
 </head>
 
 	<body>
-		<div id="fullscreenBtn">
-		<button onclick="toanManHinh()">Bật toàn màn hình</button>
-		</div>
 		<script>
-			document.getElementById("fs").addEventListener("click", function(){
-			let elem = document.documentElement;
-			if (!document.fullscreenElement) {
-			elem.requestFullscreen();
-			}
-			});	
-		</script>
+function toanManHinh(){
+let elem = document.documentElement;
+
+if (elem.requestFullscreen) {
+elem.requestFullscreen();
+}
+else if (elem.webkitRequestFullscreen) {
+elem.webkitRequestFullscreen();
+}
+else if (elem.msRequestFullscreen) {
+elem.msRequestFullscreen();
+}
+}
+</script>
 			 
 			<audio id="bgMusic" autoplay="autoplay" >
     			<source src="music/nhac.mp3" type="audio/mp3" />
@@ -238,6 +242,7 @@
 
 </body>
 </html>
+
 
 
 
