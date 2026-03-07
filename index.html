@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,20 +13,9 @@ html,body{
     margin:0;
     padding:0;
     overflow:hidden;
-    background:#000;
 }
-
-#canvas{
-    display:block;
-}
-
-#text{
-    position:absolute;
-    top:40%;
-    width:100%;
-    text-align:center;
-    color:white;
-    font-size:30px;
+canvas{
+    cursor:pointer;
 }
 </style>
 
@@ -35,27 +25,25 @@ html,body{
 
 <canvas id="canvas"></canvas>
 
-<div id="text">
-    Chào em ❤️
-</div>
-
-<audio id="music" loop>
+<audio id="music" autoplay loop>
 <source src="music.mp3" type="audio/mpeg">
 </audio>
 
 <script>
 
 var canvas = $('#canvas');
-var width = window.innerWidth;
-var height = window.innerHeight;
+var width = $(window).width();
+var height = $(window).height();
 
 canvas.attr("width", width);
 canvas.attr("height", height);
 
 var opts = {
     seed: {
-        x: width / 2,
-        y: height / 2 + 50
+        x: width / 2 - 20,
+        y: height / 2,
+        color: "rgb(190, 26, 37)",
+        scale: 2
     }
 };
 
@@ -63,31 +51,37 @@ var tree = new Tree(canvas[0], width, height, opts);
 var seed = tree.seed;
 var hold = 1;
 
+
+/* -------- FULLSCREEN FUNCTION -------- */
+
 function openFullscreen() {
 
     var elem = document.documentElement;
 
     if (elem.requestFullscreen) {
         elem.requestFullscreen();
-    }
+    } 
     else if (elem.webkitRequestFullscreen) {
         elem.webkitRequestFullscreen();
-    }
+    } 
     else if (elem.msRequestFullscreen) {
         elem.msRequestFullscreen();
     }
 
 }
 
-canvas.click(function(e){
 
-    var offset = canvas.offset();
-    var x = e.pageX - offset.left;
-    var y = e.pageY - offset.top;
+/* -------- CLICK SEED -------- */
 
-    if(seed.hover(x,y)){
+canvas.click(function(e) {
 
-        openFullscreen();
+    var offset = canvas.offset(), x, y;
+    x = e.pageX - offset.left;
+    y = e.pageY - offset.top;
+
+    if (seed.hover(x, y)) {
+
+        openFullscreen();   // fullscreen khi nhấn play
 
         document.getElementById("music").play();
 
@@ -95,81 +89,89 @@ canvas.click(function(e){
 
         canvas.unbind("click");
         canvas.unbind("mousemove");
-        canvas.removeClass("hand");
+        canvas.removeClass('hand');
     }
 
 });
 
-canvas.mousemove(function(e){
 
-    var offset = canvas.offset();
-    var x = e.pageX - offset.left;
-    var y = e.pageY - offset.top;
+canvas.mousemove(function(e) {
 
-    canvas.toggleClass('hand', seed.hover(x,y));
+    var offset = canvas.offset(), x, y;
+    x = e.pageX - offset.left;
+    y = e.pageY - offset.top;
+
+    canvas.toggleClass('hand', seed.hover(x, y));
 
 });
 
-var seedAnimate = function(){
+
+/* -------- ANIMATION -------- */
+
+var seedAnimate = function() {
 
     seed.draw();
 
-    while(hold){
+    while (hold) {
         await sleep(10);
     }
 
-    while(seed.canScale()){
+    while (seed.canScale()) {
         seed.scale(0.95);
         await sleep(10);
     }
 
-    while(seed.canMove()){
-        seed.move(0,2);
+    while (seed.canMove()) {
+        seed.move(0, 2);
         await sleep(10);
     }
 
 };
 
-var growAnimate = function(){
+var growAnimate = function() {
 
-    do{
+    do {
         tree.grow();
         await sleep(10);
-    }
-    while(tree.canGrow());
+    } while (tree.canGrow());
 
 };
 
-var flowAnimate = function(){
+var flowAnimate = function() {
 
-    do{
+    do {
         tree.flower(2);
         await sleep(10);
+    } while (tree.canFlower());
+
+};
+
+var moveAnimate = function() {
+
+    tree.snapshot("p1", 240, 0, 610, 680);
+
+    while (tree.move("p1", 500, 0)) {
+        await sleep(10);
     }
-    while(tree.canFlower());
 
 };
 
-var textAnimate = function(){
-
-    $("#text").fadeIn(2000);
-
-};
-
-(async function(){
+(async function() {
 
     await seedAnimate();
     await growAnimate();
     await flowAnimate();
-    await textAnimate();
+    await moveAnimate();
 
 })();
 
-function sleep(ms){
-    return new Promise(resolve => setTimeout(resolve,ms));
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 </script>
 
 </body>
 </html>
+```
