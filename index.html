@@ -13,7 +13,7 @@
 		<script type="text/javascript" src="./renxi/functions.js" charset="utf-8"></script>
         <script type="text/javascript" src="./renxi/love.js" charset="utf-8"></script>
 		<style>
-			#fullscreenBtn{
+			button {
 			position:fixed;
 			top:20px;
 			right:20px;
@@ -23,21 +23,27 @@
 </head>
 
 	<body>
-		<script>
-function toanManHinh(){
-let elem = document.documentElement;
-
-if (elem.requestFullscreen) {
-elem.requestFullscreen();
-}
-else if (elem.webkitRequestFullscreen) {
-elem.webkitRequestFullscreen();
-}
-else if (elem.msRequestFullscreen) {
-elem.msRequestFullscreen();
-}
-}
-</script>
+		<body>
+			
+			<div id="fullscreenBtn">
+					<button onclick="toanManHinh()">Bật toàn màn hình</button>
+			</div>
+			
+			<script>
+					function toanManHinh(){
+					let elem = document.documentElement;
+					
+					if (elem.requestFullscreen) {
+					elem.requestFullscreen();
+					}
+					else if (elem.webkitRequestFullscreen) {
+					elem.webkitRequestFullscreen();
+					}
+					else if (elem.msRequestFullscreen) {
+					elem.msRequestFullscreen();
+					}
+					}
+			</script>
 			 
 			<audio id="bgMusic" autoplay="autoplay" >
     			<source src="music/nhac.mp3" type="audio/mp3" />
@@ -242,6 +248,7 @@ elem.msRequestFullscreen();
 
 </body>
 </html>
+
 
 
 
