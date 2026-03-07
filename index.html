@@ -14,21 +14,23 @@
         <script type="text/javascript" src="./renxi/love.js" charset="utf-8"></script>
 				
 		<style>
-		button{
-		    margin:0;
-		    height:10vh;
-		    display:flex;
-		    justify-content:center;
-		    align-items:center;
-		    background:blue;
-		    color:white;
-		    font-size:30px;
-			z-index:9999;
-		}
-		button{
-		    padding:15px 30px;
-		    font-size:20px;
-		}
+			.npc {
+				z-index:9999;
+			}
+			button{
+			    margin:0;
+			    height:10vh;
+			    display:flex;
+			    justify-content:center;
+			    align-items:center;
+			    background:blue;
+			    color:white;
+			    font-size:30px;
+			}
+			button{
+			    padding:15px 30px;
+			    font-size:20px;
+			}
 		</style>
 </head>
     <body>
@@ -40,21 +42,22 @@
           
 
         <div id="main">
-			<button onclick="toanManHinh()">Bật toàn màn hình</button>
-
-			<script>
-			function toanManHinh() {
-			    let elem = document.documentElement;
-			
-			    if (elem.requestFullscreen) {
-			        elem.requestFullscreen();
-			    } else if (elem.webkitRequestFullscreen) { 
-			        elem.webkitRequestFullscreen();
-			    } else if (elem.msRequestFullscreen) { 
-			        elem.msRequestFullscreen();
-			    }
-			}
-			</script>
+			<div class="npd">
+				<button onclick="toanManHinh()">Bật toàn màn hình</button>
+				<script>
+				function toanManHinh() {
+				    let elem = document.documentElement;
+				
+				    if (elem.requestFullscreen) {
+				        elem.requestFullscreen();
+				    } else if (elem.webkitRequestFullscreen) { 
+				        elem.webkitRequestFullscreen();
+				    } else if (elem.msRequestFullscreen) { 
+				        elem.msRequestFullscreen();
+				    }
+				}
+				</script>
+			</div>
 			
             <div id="error">Trình duyệt của bạn không được hỗ trợ. Để được hỗ trợ liên hệ daikupj@gmail.com. Hoặc sử dụng (<a href="http://www.google.cn/chrome">Chrome</a>) và (<a href="http://firefox.com/download/">Firefox</a>)</div>
              <div id="wrap">
@@ -243,6 +246,7 @@
 
 </body>
 </html>
+
 
 
 
