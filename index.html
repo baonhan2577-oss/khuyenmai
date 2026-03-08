@@ -13,6 +13,17 @@
 		<script type="text/javascript" src="./renxi/functions.js" charset="utf-8"></script>
         <script type="text/javascript" src="./renxi/love.js" charset="utf-8"></script>
 
+		<style>
+			body{
+			margin:0;
+			overflow:hidden;
+			display:flex;
+			justify-content:center;
+			align-items:center;
+			height:100vh;
+			}
+		</style>
+	
 </head>
     <body>
  
@@ -47,9 +58,7 @@
             
         </div>
     
-    <script>
-    </script>
-
+    
     <script>
     (function(){
         var canvas = $('#canvas');
@@ -57,6 +66,23 @@
         if (!canvas[0].getContext) {
             $("#error").show();
             return false;        }
+		var baseWidth = 1100;
+var baseHeight = 680;
+
+function scalePage(){
+    var scale = Math.min(
+        window.innerWidth / baseWidth,
+        window.innerHeight / baseHeight
+    );
+
+    $("#wrap").css({
+        transform: "scale(" + scale + ")",
+        transformOrigin: "top left"
+    });
+}
+
+scalePage();
+window.addEventListener("resize", scalePage);
 
         var width = canvas.width();
         var height = canvas.height();        
@@ -248,6 +274,7 @@
 
 </body>
 </html>
+
 
 
 
