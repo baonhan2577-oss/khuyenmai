@@ -13,22 +13,11 @@
 		<script type="text/javascript" src="./renxi/functions.js" charset="utf-8"></script>
         <script type="text/javascript" src="./renxi/love.js" charset="utf-8"></script>
 
-		<style>
-			body{
-			margin:0;
-			overflow:hidden;
-			display:flex;
-			justify-content:center;
-			align-items:center;
-			height:100vh;
-			}
-		</style>
-	
 </head>
     <body>
  
 			<audio  id="bgMusic" loop>
-					<source src="music/nhac.mp3" type="audio/mpeg" />
+					<source src="music/nhac.mp3" type="audio/mp3" />
             </audio> 
 
           
@@ -53,12 +42,13 @@
 <!-- <span class="STYLE1"> Time of love...</span> -->
                   <div id="clock"></div>
               </div>
-                <canvas id="canvas" width="1100" height="680"></canvas>
+                <canvas id="canvas" width="1000" height="620"></canvas>
             </div>
             
         </div>
     
     
+
     <script>
     (function(){
         var canvas = $('#canvas');
@@ -66,23 +56,6 @@
         if (!canvas[0].getContext) {
             $("#error").show();
             return false;        }
-		var baseWidth = 1100;
-var baseHeight = 680;
-
-function scalePage(){
-    var scale = Math.min(
-        window.innerWidth / baseWidth,
-        window.innerHeight / baseHeight
-    );
-
-    $("#wrap").css({
-        transform: "scale(" + scale + ")",
-        transformOrigin: "top left"
-    });
-}
-
-scalePage();
-window.addEventListener("resize", scalePage);
 
         var width = canvas.width();
         var height = canvas.height();        
@@ -129,8 +102,7 @@ window.addEventListener("resize", scalePage);
         var foot = tree.footer;
         var hold = 1;
 
-		//npc
-		function openFullscreen() {
+       function openFullscreen() {
 
     var elem = document.documentElement;
 
@@ -175,8 +147,6 @@ window.addEventListener("resize", scalePage);
 			            });
 			        }
 			    }
-			
-			});
         }).mousemove(function(e){
             var offset = canvas.offset(), x, y;
             x = e.pageX - offset.left;
@@ -274,8 +244,3 @@ window.addEventListener("resize", scalePage);
 
 </body>
 </html>
-
-
-
-
-
